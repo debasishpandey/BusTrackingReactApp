@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, Tooltip } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import busLogo from "../../assets/LOGO/buslogo.png";
 
 // Leaflet icon fix
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
@@ -14,6 +15,13 @@ L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
+});
+
+const busicon = L.icon({
+  iconUrl: busLogo,
+ iconSize: [35, 23],       // width: 40px, height: ~27px (scaled from 1357x901)
+  iconAnchor: [20, 27],     // center bottom of the icon
+  popupAnchor: [0, -27],    // show popup just above the icon    // position of popup relative to icon
 });
 
 export default function DriverDashboard() {
@@ -146,7 +154,9 @@ export default function DriverDashboard() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               {/* Driver Marker */}
-              <Marker position={driverLocation}>
+              <Marker position={driverLocation}
+              icon={busicon}
+              >
                 <Popup>
                   <strong>You (Driver)</strong>
                 </Popup>
