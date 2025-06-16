@@ -158,11 +158,8 @@ export default function DriverDashboard() {
               icon={busicon}
               >
                 <Popup>
-                  <strong>You (Driver)</strong>
+                  <strong>You</strong>
                 </Popup>
-                <Tooltip permanent direction="top" offset={[0, -10]}>
-                  Driver
-                </Tooltip>
               </Marker>
 
               {/* Student Markers */}
