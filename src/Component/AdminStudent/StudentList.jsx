@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, Button, Container, Row, Col, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import profilePhoto from '../../assets/default_profile.jpg';
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
@@ -72,7 +73,7 @@ const StudentList = () => {
               ) : (
                 <Card.Img
                   variant="top"
-                  src="https://via.placeholder.com/300x250?text=No+Photo"
+                  src={profilePhoto}
                   alt="No Profile"
                 />
               )}

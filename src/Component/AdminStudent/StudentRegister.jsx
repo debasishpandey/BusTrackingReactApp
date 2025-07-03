@@ -1,22 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Form, Button, Container, Row, Col, Spinner } from "react-bootstrap";
 
 const StudentRegister = () => {
   const [student, setStudent] = useState({
-    registrationNo: '',
-    name: '',
-    username: '',
-    password: '',
-    pickupLocation: '',
+    registrationNo: "",
+    name: "",
+    username: "",
+    password: "",
+    pickupLocation: "",
+    email: "",
+    phone: "",
     assignedBus: null,
   });
 
   const [buses, setBuses] = useState([]);
   const [loading, setLoading] = useState(true);
-
-
-
 
   useEffect(() => {
     fetchBuses();
@@ -32,11 +31,45 @@ const StudentRegister = () => {
       setLoading(false);
     }
   };
-  
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
+    if (name === "assignedBus") {
+      setStudent((prev) => ({
+        ...prev,
+        assignedBus: value ? { id: parseInt(value, 10) } : null,
+      }));
+    } else {
+      setStudent((prev) => ({ ...prev, [name]: value }));
+    }
+  };
 
-if (loading) {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await axios.post("http://localhost:8081/student/register", student);
+      alert("✅ Student registered successfully!");
+
+      // Optional: Reset form after success
+      setStudent({
+        registrationNo: "",
+        name: "",
+        username: "",
+        password: "",
+        pickupLocation: "",
+        email: "",
+        phone: "",
+        assignedBus: null,
+      });
+    } catch (err) {
+      console.error("Registration failed:", err.response?.data || err);
+      alert("❌ Failed to register student. Check inputs or server.");
+    }
+  };
+
+  if (loading) {
     return (
       <div className="text-center mt-5">
         <Spinner animation="border" />
@@ -45,46 +78,10 @@ if (loading) {
     );
   }
 
-
- 
-
-
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setStudent((prev) => ({ ...prev, [name]: value }));
-  };
-
-  
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-    for (const key in student) {
-      if (key === 'assignedBus' && student[key]) {
-        formData.append('assignedBus.id', student[key]);
-      } else {
-        formData.append(key, student[key]);
-      }
-    }
-
-    try {
-      await axios.post('http://localhost:8081/student/register', student);
-      alert('Student registered successfully!');
-  
-    } catch (err) {
-      console.error('Registration failed:', err);
-      alert('Failed to register student');
-    }
-  };
-
- 
-
   return (
     <Container className="mt-4">
       <h3>Student Registration</h3>
-      <Form onSubmit={handleSubmit} encType="multipart/form-data">
+      <Form onSubmit={handleSubmit}>
         <Row>
           <Col md={6}>
             <Form.Group className="mb-3">
@@ -137,6 +134,30 @@ if (loading) {
               />
             </Form.Group>
           </Col>
+          <Col md={6}>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                value={student.email}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group className="mb-3">
+              <Form.Label>Phone</Form.Label>
+              <Form.Control
+                type="text"
+                name="phone"
+                value={student.phone}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+          </Col>
         </Row>
 
         <Form.Group className="mb-3">
@@ -154,7 +175,7 @@ if (loading) {
           <Form.Label>Assign Bus</Form.Label>
           <Form.Select
             name="assignedBus"
-            // value={student.assignedBus}
+            value={student.assignedBus?.id || ""}
             onChange={handleChange}
           >
             <option value="">-- Select Bus --</option>
@@ -165,6 +186,7 @@ if (loading) {
             ))}
           </Form.Select>
         </Form.Group>
+
         <Button type="submit" variant="success">
           Register Student
         </Button>

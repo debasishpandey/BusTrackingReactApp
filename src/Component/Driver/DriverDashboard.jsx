@@ -9,6 +9,8 @@ import busLogo from "../../assets/LOGO/buslogo.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import axios from "axios";
+import DriverHeader from "./DriverHeader";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -28,8 +30,10 @@ export default function DriverDashboard() {
   const [driverStatus, setDriverStatus] = useState(false);
   const [driverLocation, setDriverLocation] = useState([20.2961, 85.8245]); // Default Bhubaneswar
   const [students, setStudents] = useState([]);
+  const [driver,setDriver]=useState({});
+  const username = localStorage.getItem("username");
 
-  // Get driver's location (once)
+  
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -42,6 +46,22 @@ export default function DriverDashboard() {
       );
     }
   }, []);
+
+  useEffect(() => {
+  if (!username) return;
+
+  axios
+    .get(`http://localhost:8081/driver/user/${username}`) // example endpoint
+    .then((res) => {
+      setDriver(res.data);
+      setDriverStatus(res.data.bus.status);
+    })
+    .catch((err) => {
+      console.error("Error fetching student:", err);
+    });
+}, []);
+
+
 
   // Fetch students every 2 seconds
   useEffect(() => {
@@ -57,10 +77,24 @@ export default function DriverDashboard() {
     return () => clearInterval(intervalId);
   }, []);
 
+   const toggleComing = () => {
+  axios
+    .put(`http://localhost:8081/driver/update-status/${username}`)
+    .then((response) => {
+      const bus= response.data;
+      setDriverStatus(bus.status) 
+    })
+    .catch((error) => {
+      console.error("Error updating coming status:", error);
+    });
+};
+
   const comingStudents = students.filter((s) => s.isComingToday);
   const notComingStudents = students.filter((s) => !s.isComingToday);
 
   return (
+    <>
+    <DriverHeader profilePhotoPath={driver.profile}>  </DriverHeader>
     <div className="container py-4">
       <h2 className="mb-3 d-flex align-items-center justify-content-between">
         Student Status
@@ -71,7 +105,7 @@ export default function DriverDashboard() {
             role="switch"
             id="driverStatusSwitch"
             checked={driverStatus}
-            onChange={() => setDriverStatus(!driverStatus)}
+            onChange={toggleComing}
           />
           <label className="form-check-label small text-muted" htmlFor="driverStatusSwitch">
             {driverStatus ? "Driver Active" : "Driver Inactive"}
@@ -195,5 +229,6 @@ export default function DriverDashboard() {
         </div>
       </div>
     </div>
+    </>
   );
 }

@@ -1,58 +1,90 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const AdminHeader = () => {
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="bg-gray-900 text-white shadow sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/admin-dashboard" className="text-lg font-bold flex items-center gap-2">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
+      <div className="container">
+        <Link className="navbar-brand" to="/admin-dashboard">
           🚌 BusTrack Admin
         </Link>
 
         <button
-          className="lg:hidden text-white focus:outline-none"
-          onClick={() => setMenuOpen(!isMenuOpen)}
+          className="navbar-toggler"
+          type="button"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-controls="adminNavbar"
+          aria-expanded={menuOpen}
+          aria-label="Toggle navigation"
         >
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2"
-            viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round"
-              d={isMenuOpen
-                ? "M6 18L18 6M6 6l12 12"
-                : "M4 6h16M4 12h16M4 18h16"}
-            />
-          </svg>
+          <span className="navbar-toggler-icon"></span>
         </button>
 
-        <nav className={`flex-col lg:flex lg:flex-row lg:items-center gap-6 ${isMenuOpen ? 'flex' : 'hidden'}`}>
-          <Link className="text-sm hover:text-gray-300" to="/admin-dashboard">Dashboard</Link>
-          <Link className="text-sm hover:text-gray-300" to="/admin-dashboard/bus/view-all">Buses</Link>
-          <Link className="text-sm hover:text-gray-300" to="/admin-dashboard/student/view-all">Students</Link>
-          <Link className="text-sm hover:text-gray-300" to="/admin-dashboard/driver/view-all">Drivers</Link>
-          <Link className="text-sm hover:text-gray-300" to="/admin-dashboard/route">Routes</Link>
-        </nav>
+        <div
+          className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}
+          id="adminNavbar"
+        >
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <Link className="nav-link" to="/admin-dashboard">
+                Dashboard
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/admin-dashboard/bus/view-all">
+                Buses
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/admin-dashboard/student/view-all">
+                Students
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/admin-dashboard/driver/view-all">
+                Drivers
+              </Link>
+            </li>
+          </ul>
 
-        {/* Admin Dropdown */}
-        <div className="relative ml-auto">
-          <button
-            onClick={() => setDropdownOpen(!isDropdownOpen)}
-            className="text-sm font-medium hover:text-gray-300"
-          >
-            Admin ▾
-          </button>
-          {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-lg z-50">
-              <Link to="/admin/profile" className="block px-4 py-2 text-sm hover:bg-gray-100">Profile</Link>
-              <Link to="/admin/settings" className="block px-4 py-2 text-sm hover:bg-gray-100">Settings</Link>
-              <div className="border-t border-gray-200"></div>
-              <Link to="/logout" className="block px-4 py-2 text-sm hover:bg-gray-100">Logout</Link>
-            </div>
-          )}
+          <ul className="navbar-nav mb-2 mb-lg-0">
+            <li className="nav-item dropdown">
+              <a
+                className="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Admin
+              </a>
+              <ul className="dropdown-menu dropdown-menu-end">
+                <li>
+                  <Link className="dropdown-item" to="/admin/profile">
+                    Profile
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/admin/settings">
+                    Settings
+                  </Link>
+                </li>
+                <li>
+                  <hr className="dropdown-divider" />
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/">
+                    Logout
+                  </Link>
+                </li>
+              </ul>
+            </li>
+          </ul>
         </div>
       </div>
-    </header>
+    </nav>
   );
 };
 

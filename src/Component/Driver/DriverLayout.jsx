@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom'
 function DriverLayout() {
   return (
     <>
-    <DriverHeader/>
+    
     <Outlet/>
     <DriverFooter/>
     </>

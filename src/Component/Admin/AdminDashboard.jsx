@@ -25,9 +25,9 @@ L.Icon.Default.mergeOptions({
 
 const busicon = L.icon({
   iconUrl: busLogo,
- iconSize: [35, 23],       // width: 40px, height: ~27px (scaled from 1357x901)
-  iconAnchor: [20, 27],     // center bottom of the icon
-  popupAnchor: [0, -27],    // show popup just above the icon    // position of popup relative to icon
+  iconSize: [35, 23], // width: 40px, height: ~27px (scaled from 1357x901)
+  iconAnchor: [20, 27], // center bottom of the icon
+  popupAnchor: [0, -27], // show popup just above the icon    // position of popup relative to icon
 });
 
 const routeHiTechToVaniVihar = [
@@ -53,76 +53,109 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div className="container mt-5 pt-4">
-      <div className="mb-4">
-        <h2>🚌 Faculty Dashboard</h2>
-        <p className="text-muted">Monitor live bus & student locations</p>
-      </div>
+  <div className="container mt-5 pt-4">
+    <div className="mb-4">
+      <h2>🚌 Faculty Dashboard</h2>
+      <p className="text-muted">Monitor live bus & student locations</p>
+    </div>
 
-      <div className="row">
-        {/* Bus list */}
-        <div className="col-lg-4 mb-4">
-          <div className="card shadow-sm">
-            <div className="card-header bg-primary text-white">
-              Active Buses
-            </div>
-            <ul className="list-group list-group-flush">
-              {buses.map((bus) => (
-                <li
-                  key={bus.id}
-                  className="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  <div>
-                    <strong>{bus.busNumber}</strong>
-                    <br />
-                    <small>{bus.routeName}</small>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* Map */}
-        <div className="col-lg-8">
-          <div className="card shadow-sm">
-            <div className="card-header bg-success text-white">Live Map</div>
-            <div className="card-body p-0" style={{ height: "500px" }}>
-              <MapContainer
-                center={[20.2961, 85.8245]}
-                zoom={13}
-                style={{ height: "100%", width: "100%" }}
-              >
-                <TileLayer
-                  attribution="&copy; OpenStreetMap contributors"
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <Polyline
-                  positions={routeHiTechToVaniVihar}
-                  color="red"
-                  weight={4}
-                />
-
-                {/* Bus markers */}
-                {buses.map((bus) => (
-                  <Marker
-                    key={`bus-${bus.id}-${bus.latitude}-${bus.longitude}`}
-                    position={[bus.latitude, bus.longitude]}
-                    icon={busicon}
+    <div className="row">
+      {/* Left Column: Bus Lists */}
+      <div className="col-lg-4 mb-4">
+        {/* Active Buses */}
+        <div className="card shadow-sm mb-4">
+          <div className="card-header bg-success text-white">🟢 Active Buses</div>
+          <ul className="list-group list-group-flush">
+            {buses.filter((bus) => bus.status === true).length === 0 ? (
+              <li className="list-group-item text-center text-muted">
+                No active buses available.
+              </li>
+            ) : (
+              buses
+                .filter((bus) => bus.status === true)
+                .map((bus) => (
+                  <li
+                    key={bus.id}
+                    className="list-group-item d-flex justify-content-between align-items-center"
                   >
-                    <Popup>
+                    <div>
                       <strong>{bus.busNumber}</strong>
                       <br />
-                      {bus.routeName}
-                    </Popup>
-                    <Tooltip>{bus.busNumber}</Tooltip>
-                  </Marker>
-                ))}
-              </MapContainer>
-            </div>
+                      <small>{bus.routeName}</small>
+                    </div>
+                  </li>
+                ))
+            )}
+          </ul>
+        </div>
+
+        {/* Inactive Buses */}
+        <div className="card shadow-sm">
+          <div className="card-header bg-danger text-white">🔴 Inactive Buses</div>
+          <ul className="list-group list-group-flush">
+            {buses.filter((bus) => bus.status === false).length === 0 ? (
+              <li className="list-group-item text-center text-muted">
+                No inactive buses available.
+              </li>
+            ) : (
+              buses
+                .filter((bus) => bus.status === false)
+                .map((bus) => (
+                  <li
+                    key={bus.id}
+                    className="list-group-item d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <strong>{bus.busNumber}</strong>
+                      <br />
+                      <small>{bus.routeName}</small>
+                    </div>
+                  </li>
+                ))
+            )}
+          </ul>
+        </div>
+      </div>
+
+      {/* Right Column: Map */}
+      <div className="col-lg-8 mb-4">
+        <div className="card shadow-sm h-100">
+          <div className="card-header bg-success text-white">🗺️ Live Map</div>
+          <div className="card-body p-0" style={{ height: "600px" }}>
+            <MapContainer
+              center={[20.2961, 85.8245]}
+              zoom={13}
+              style={{ height: "100%", width: "100%" }}
+            >
+              <TileLayer
+                attribution="&copy; OpenStreetMap contributors"
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <Polyline
+                positions={routeHiTechToVaniVihar}
+                color="red"
+                weight={4}
+              />
+              {buses.map((bus) => (
+                <Marker
+                  key={`bus-${bus.id}-${bus.latitude}-${bus.longitude}`}
+                  position={[bus.latitude, bus.longitude]}
+                  icon={busicon}
+                >
+                  <Popup>
+                    <strong>{bus.busNumber}</strong>
+                    <br />
+                    {bus.routeName}
+                  </Popup>
+                  <Tooltip>{bus.busNumber}</Tooltip>
+                </Marker>
+              ))}
+            </MapContainer>
           </div>
         </div>
       </div>
     </div>
-  );
+  </div>
+);
+
 }

@@ -31,6 +31,8 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import AdminHeader from './Component/Admin/AdminHeader.jsx'
 import Navbarc from './Component/Admin/Navbar.jsx'
+import ForgotPassword from './Component/ForgetPassword.jsx'
+import ResetPassword from './Component/ResetPassword.jsx'
 
 
 
@@ -71,10 +73,12 @@ const router =createBrowserRouter(createRoutesFromElements(
 
       {/* Student and Public Routes */}
 
-      <Route path="/check" element={<AdminHeader/>} />
+      
 
 
       <Route path="/" element={<HomePage />} />
+      <Route path="/forgot-password/:role" element={<ForgotPassword />} />
+      <Route path="/:role/reset-password" element={<ResetPassword />} />
       <Route path="/admin-Login" element={<RoleLogin role="admin" />} />
       <Route path="/student-Login" element={<RoleLogin role="student" />} />
       <Route path="/driver-Login" element={<RoleLogin role="driver" />} />

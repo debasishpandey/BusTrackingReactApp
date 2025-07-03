@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Button, Row, Col, Container } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import profilePhoto from '../../assets/default_profile.jpg';
 
 const DriverList = () => {
   const [drivers, setDrivers] = useState([]);
@@ -32,7 +33,7 @@ const DriverList = () => {
             <Card className="h-100 shadow-sm">
               <Card.Img
                 variant="top"
-                src={driver.profile || '/default-profile.png'}
+                src={driver.profile || profilePhoto}
                 alt="Profile"
                 style={{ height: '200px', objectFit: 'cover' }}
               />
