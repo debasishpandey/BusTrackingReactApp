@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams} from 'react-router-dom';
 import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
+import config from "../../util/config";
 
 const BusUpdate = () => {
   const { busId } = useParams(); // assumes route: /admin/bus/update/:busId
