@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import config from "../util/config";
 
 
 const RoleLogin = ({ role }) => {
@@ -28,7 +29,7 @@ const RoleLogin = ({ role }) => {
     toUrl = role.toLowerCase();
 
     try {
-      const response = await axios.post(`http://localhost:8081/${role}/login`, {
+      const response = await axios.post(`${config.api}/${role}/login`, {
         username,
         password,
       });

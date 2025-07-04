@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import config from "../util/config";
 
 const ForgotPassword = () => {
   const { role } = useParams();
@@ -31,7 +32,7 @@ const ForgotPassword = () => {
   try {
     console.log(email);
 
-    const response = await axios.post(`http://localhost:8081/otp/send?email=${email}`);
+    const response = await axios.post(`${config.api}/otp/send?email=${email}`);
 
     // Since the backend just returns a plain string like "OTP sent"
     if (response.status === 200 && response.data.includes("OTP sent")) {
@@ -50,7 +51,7 @@ const ForgotPassword = () => {
   const handleVerifyOTP = async (e) => {
   e.preventDefault();
   try {
-    const response = await axios.post(`http://localhost:8081/otp/validate`, {
+    const response = await axios.post(`${config.api}/otp/validate`, {
       username: email,     // or registrationNo
       password: otp        // 'password' field holds the OTP in your backend logic
     });

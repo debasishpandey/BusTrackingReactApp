@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import config from "../../util/config";
 
 const BusRegister = () => {
   const [busNumber, setBusNumber] = useState('');
@@ -12,7 +13,7 @@ const BusRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8081/bus/register",{
+      const response = await axios.post(`${config.api}/bus/register`,{
       busNumber,
       routeName,
       status

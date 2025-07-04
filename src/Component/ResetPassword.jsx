@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import config from "../util/config";
 
 const ResetPassword = ({ role = 'student' }) => {
   const [newPassword, setNewPassword] = useState('');
@@ -22,7 +23,7 @@ const ResetPassword = ({ role = 'student' }) => {
     
 
     try {
-      const response = await axios.post(`http://localhost:8081/${role}/reset-password`,  {
+      const response = await axios.post(`${config.api}/${role}/reset-password`,  {
       username: username,     
       password: newPassword       
     });

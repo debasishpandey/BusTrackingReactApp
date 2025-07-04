@@ -13,12 +13,12 @@ const BusUpdate = () => {
 
   useEffect(() => {
     // Fetch bus details
-    axios.get(`http://localhost:8081/bus/${busId}`)
+    axios.get(`${config.api}/bus/${busId}`)
       .then(res => setBus(res.data))
       .catch(err => console.error('Failed to fetch bus:', err));
 
     // Fetch available drivers
-    axios.get('http://localhost:8081/driver/all')
+    axios.get(`${config.api}/driver/all`)
       .then(res => setDrivers(res.data))
       .catch(err => console.error('Failed to fetch drivers:', err));
   }, [busId]);
@@ -33,7 +33,7 @@ const BusUpdate = () => {
     console.log("cliked");
     
 
-    axios.put(`http://localhost:8081/bus/update`, bus)
+    axios.put(`${config.api}/bus/update`, bus)
       .then(() => {
         toast.success('bus details updated successfully!');
         console.log("update");

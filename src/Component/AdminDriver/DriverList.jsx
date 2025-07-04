@@ -3,13 +3,14 @@ import { Card, Button, Row, Col, Container } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import profilePhoto from '../../assets/default_profile.jpg';
+import config from "../../util/config";
 
 const DriverList = () => {
   const [drivers, setDrivers] = useState([]);
   const navigate=useNavigate();
-
+const apiUrl=config.api;
   useEffect(() => {
-    axios.get('http://localhost:8081/driver/all') 
+    axios.get(`${apiUrl}/driver/all`) 
       .then((res) => setDrivers(res.data))
       .catch((err) => console.error('Error fetching drivers:', err));
   }, []);

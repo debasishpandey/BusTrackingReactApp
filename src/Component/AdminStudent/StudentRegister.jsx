@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Form, Button, Container, Row, Col, Spinner } from "react-bootstrap";
+import config from "../../util/config";
 
 const StudentRegister = () => {
   const [student, setStudent] = useState({
@@ -13,7 +14,7 @@ const StudentRegister = () => {
     phone: "",
     assignedBus: null,
   });
-
+const apiUrl=config.api;
   const [buses, setBuses] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +24,7 @@ const StudentRegister = () => {
 
   const fetchBuses = async () => {
     try {
-      const response = await axios.get("http://localhost:8081/bus/all");
+      const response = await axios.get(`${apiUrl}/bus/all`);
       setBuses(response.data);
     } catch (error) {
       console.error("Error fetching buses:", error);
@@ -49,7 +50,7 @@ const StudentRegister = () => {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:8081/student/register", student);
+      await axios.post(`${apiUrl}/student/register`, student);
       alert("✅ Student registered successfully!");
 
       // Optional: Reset form after success

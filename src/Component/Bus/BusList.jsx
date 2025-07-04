@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Table, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import config from "../../util/config";
 
 const BusList = () => {
   const [buses, setBuses] = useState([]);
   const [loading, setLoading] = useState(true);
 
-
+  const apiUrl=config.api;
   const navigate=useNavigate();
   // Fetch buses on mount
   useEffect(() => {
@@ -16,7 +17,7 @@ const BusList = () => {
 
   const fetchBuses = async () => {
     try {
-      const response = await axios.get("http://localhost:8081/bus/all");
+      const response = await axios.get(`${apiUrl}/bus/all`);
       setBuses(response.data);
     } catch (error) {
       console.error("Error fetching buses:", error);
@@ -28,7 +29,7 @@ const BusList = () => {
   const handleRemove = async (id) => {
     if (!window.confirm("Are you sure you want to delete this bus?")) return;
     try {
-      await axios.delete(`http://localhost:8081/bus/${id}`);
+      await axios.delete(`${apiUrl}/bus/${id}`);
       setBuses((prev) => prev.filter((bus) => bus.id !== id));
       alert("Bus removed successfully.");
     } catch (error) {

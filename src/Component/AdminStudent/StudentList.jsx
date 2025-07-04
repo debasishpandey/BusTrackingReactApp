@@ -3,16 +3,17 @@ import axios from "axios";
 import { Card, Button, Container, Row, Col, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import profilePhoto from '../../assets/default_profile.jpg';
+import config from "../../util/config";
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const apiUrl=config.api;
   const navigate = useNavigate();
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get("http://localhost:8081/student/all");
+      const response = await axios.get(`${apiUrl}/student/all`);
       setStudents(response.data);
     } catch (error) {
       console.error("Failed to fetch students:", error);
@@ -28,7 +29,7 @@ const StudentList = () => {
   const handleDelete = async (registrationNo) => {
     if (window.confirm("Are you sure you want to delete this student?")) {
       try {
-        await axios.delete(`http://localhost:8081/student/${registrationNo}`);
+        await axios.delete(`${apiUrl}/student/${registrationNo}`);
         setStudents(
           students.filter((s) => s.registrationNo !== registrationNo)
         );
@@ -66,7 +67,7 @@ const StudentList = () => {
               {student.profilePhotoPath ? (
                 <Card.Img
                   variant="top"
-                  src={`http://localhost:8081/images/${student.profilePhotoPath}`}
+                  src={`${apiUrl}/images/${student.profilePhotoPath}`}
                   alt="Profile"
                   style={{ height: "250px", objectFit: "cover" }}
                 />

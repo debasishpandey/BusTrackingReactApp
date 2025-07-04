@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
+import config from "../../util/config";
 
 const AdminStudentUpdate = () => {
   const { registrationNo } = useParams();
-
+  const apiUrl=config.api;
   const [buses, setBus] = useState([]);
   const [studentData, setStudentData] = useState({
     name: '',
@@ -19,7 +20,7 @@ const AdminStudentUpdate = () => {
   });
 
   useEffect(() => {
-    axios.get(`http://localhost:8081/student/${registrationNo}`)
+    axios.get(`${apiUrl}/student/${registrationNo}`)
       .then((res) => {
         const fetchedStudent = res.data;
         // Set assignedBus to null if missing
@@ -30,7 +31,7 @@ const AdminStudentUpdate = () => {
       })
       .catch((err) => console.error(err));
 
-    axios.get('http://localhost:8081/bus/all')
+    axios.get(`${apiUrl}/bus/all`)
       .then(res => setBus(res.data))
       .catch(err => console.error('Failed to fetch buses:', err));
   }, [registrationNo]);
@@ -54,7 +55,7 @@ const AdminStudentUpdate = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.put(`http://localhost:8081/student/update`, studentData)
+    axios.put(`${apiUrl}/student/update`, studentData)
       .then(() => alert("Student updated successfully"))
       .catch((err) => console.error("Error updating student:", err));
   };

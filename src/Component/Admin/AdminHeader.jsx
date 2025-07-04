@@ -1,87 +1,64 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const AdminHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
-      <div className="container">
-        <Link className="navbar-brand" to="/admin-dashboard">
+    <nav className="sticky top-0 z-[999] bg-[#212529] text-white shadow min-h-[56px]">
+      <div className="max-w-screen-xl mx-auto px-4 py-2 flex items-center justify-between">
+        <Link
+          to="/admin-dashboard"
+          className="text-base font-semibold flex items-center gap-2 no-underline text-white"
+        >
           🚌 BusTrack Admin
         </Link>
 
         <button
-          className="navbar-toggler"
-          type="button"
+          className="lg:hidden text-white"
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-controls="adminNavbar"
-          aria-expanded={menuOpen}
-          aria-label="Toggle navigation"
         >
-          <span className="navbar-toggler-icon"></span>
+          <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d={menuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
+            />
+          </svg>
         </button>
 
         <div
-          className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}
-          id="adminNavbar"
+          className={`lg:flex ${menuOpen ? 'flex' : 'hidden'} flex-col lg:flex-row lg:items-center w-full lg:w-auto mt-3 lg:mt-0 space-y-2 lg:space-y-0 lg:space-x-4`}
         >
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <Link className="nav-link" to="/admin-dashboard">
-                Dashboard
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/admin-dashboard/bus/view-all">
-                Buses
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/admin-dashboard/student/view-all">
-                Students
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/admin-dashboard/driver/view-all">
-                Drivers
-              </Link>
-            </li>
-          </ul>
+          <Link to="/admin-dashboard" className="text-base no-underline text-white hover:text-gray-300">
+            Dashboard
+          </Link>
+          <Link to="/admin-dashboard/bus/view-all" className="text-base no-underline text-white hover:text-gray-300">
+            Buses
+          </Link>
+          <Link to="/admin-dashboard/student/view-all" className="text-base no-underline text-white hover:text-gray-300">
+            Students
+          </Link>
+          <Link to="/admin-dashboard/driver/view-all" className="text-base no-underline text-white hover:text-gray-300">
+            Drivers
+          </Link>
 
-          <ul className="navbar-nav mb-2 mb-lg-0">
-            <li className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Admin
-              </a>
-              <ul className="dropdown-menu dropdown-menu-end">
-                <li>
-                  <Link className="dropdown-item" to="/admin/profile">
-                    Profile
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/admin/settings">
-                    Settings
-                  </Link>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/">
-                    Logout
-                  </Link>
-                </li>
-              </ul>
-            </li>
-          </ul>
+          {/* Dropdown */}
+          <div className="relative group">
+            <button className="text-base no-underline text-white hover:text-gray-300">Admin ▾</button>
+            <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-lg hidden group-hover:block z-50">
+              <Link to="/admin/profile" className="block px-4 py-2 text-sm hover:bg-gray-100">
+                Profile
+              </Link>
+              <Link to="/admin/settings" className="block px-4 py-2 text-sm hover:bg-gray-100">
+                Settings
+              </Link>
+              <div className="border-t border-gray-200"></div>
+              <Link to="/" className="block px-4 py-2 text-sm hover:bg-gray-100">
+                Logout
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </nav>

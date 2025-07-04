@@ -2,7 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 
-const AdminFooter = () => {
+const StudentFooter = () => {
   return (
     <footer className="bg-dark text-light pt-4 pb-3 mt-5">
       <div className="container">
@@ -45,4 +45,4 @@ const AdminFooter = () => {
   );
 };
 
-export default AdminFooter;
+export default StudentFooter;

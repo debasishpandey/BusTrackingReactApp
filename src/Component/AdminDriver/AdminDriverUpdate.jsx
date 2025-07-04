@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import config from "../../util/config";
 
 const AdminDriverUpdate = () => {
   const { driverId } = useParams(); // assumes URL: /driver/update/:id
@@ -14,9 +15,9 @@ const AdminDriverUpdate = () => {
     username: '',
     password: ''
   });
-
+const apiUrl=config.api;
   useEffect(() => {
-    axios.get(`http://localhost:8081/driver/${driverId}`)
+    axios.get(`${apiUrl}/driver/${driverId}`)
       .then((res) => setDriver(res.data))
       .catch((err) => console.error('Error fetching driver:', err));
   }, [driverId]);
@@ -33,7 +34,7 @@ const AdminDriverUpdate = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://localhost:8081/driver/update`, driver)
+    axios.put(`${apiUrl}/driver/update`, driver)
       .then(() => alert("update"))
       .catch((err) => console.error('Error updating driver:', err));
   };

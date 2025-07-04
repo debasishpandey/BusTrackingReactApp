@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
+import config from "../../util/config";
 
 
 const AdminDriverRegister = () => {
   
-
+const apiUrl=config.api;
   const [driver, setDriver] = useState({
     id: '',
     name: '',
@@ -25,7 +26,7 @@ const AdminDriverRegister = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:8081/driver/register', driver)
+    axios.post(`${apiUrl}/driver/register`, driver)
       .then(() => {alert("Driver registered")})
       .catch((err) => {alert(err)});
   };

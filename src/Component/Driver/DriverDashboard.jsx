@@ -4,6 +4,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import busLogo from "../../assets/LOGO/buslogo.png";
+import default_photo from "../../assets/default_profile.jpg";
+import config from "../../util/config";
 
 // Leaflet icon fix
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
@@ -51,7 +53,7 @@ export default function DriverDashboard() {
   if (!username) return;
 
   axios
-    .get(`http://localhost:8081/driver/user/${username}`) // example endpoint
+    .get(`${config.api}/driver/user/${username}`) // example endpoint
     .then((res) => {
       setDriver(res.data);
       setDriverStatus(res.data.bus.status);
@@ -66,7 +68,7 @@ export default function DriverDashboard() {
   // Fetch students every 2 seconds
   useEffect(() => {
     const fetchStudents = () => {
-      fetch("http://localhost:8081/student/all")
+      fetch(`${config.api}/student/all`)
         .then((res) => res.json())
         .then((data) => setStudents(data))
         .catch((err) => console.error("Failed to fetch students:", err));
@@ -79,7 +81,7 @@ export default function DriverDashboard() {
 
    const toggleComing = () => {
   axios
-    .put(`http://localhost:8081/driver/update-status/${username}`)
+    .put(`${config.api}/driver/update-status/${username}`)
     .then((response) => {
       const bus= response.data;
       setDriverStatus(bus.status) 
@@ -94,7 +96,7 @@ export default function DriverDashboard() {
 
   return (
     <>
-    <DriverHeader profilePhotoPath={driver.profile}>  </DriverHeader>
+    <DriverHeader profilePhotoPath={driver.profile ||default_photo}>  </DriverHeader>
     <div className="container py-4">
       <h2 className="mb-3 d-flex align-items-center justify-content-between">
         Student Status

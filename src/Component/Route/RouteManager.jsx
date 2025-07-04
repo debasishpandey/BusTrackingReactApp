@@ -9,6 +9,7 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import config from "../../util/config";
 
 const RouteManager = () => {
   const [routes, setRoutes] = useState([]);
@@ -18,7 +19,7 @@ const RouteManager = () => {
 
   // Fetch all existing routes
   useEffect(() => {
-    fetch("http://localhost:8081/routes")
+    fetch(`${config.api}/routes`)
       .then((res) => res.json())
       .then(setRoutes)
       .catch(console.error);
@@ -39,7 +40,7 @@ const RouteManager = () => {
       coordinatesJson: JSON.stringify(currentPoints)
     };
 
-    fetch("http://localhost:8081/routes", {
+    fetch(`${config.api}/routes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(routeData)
@@ -56,7 +57,7 @@ const RouteManager = () => {
   
   
   const deleteRoute = (id) => {
-    fetch(`http://localhost:8081/routes/${id}`, { method: "DELETE" })
+    fetch(`${config.api}/routes/${id}`, { method: "DELETE" })
       .then(() => setRoutes(routes.filter((r) => r.id !== id)))
       .catch(console.error);
   };

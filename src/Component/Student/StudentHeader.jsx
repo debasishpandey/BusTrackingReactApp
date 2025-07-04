@@ -1,26 +1,39 @@
-import React from "react";
-import { Navbar, Nav, Container, Button } from "react-bootstrap";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Navbar, Nav, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import config from "../../util/config";
+
+const StudentHeader = () => {
 
 
+ const [student, setStudent] = useState({});
 
-const DriverHeader = ({ profilePhotoPath = "https://via.placeholder.com/40", onLogout }) => {
+   useEffect(() => {
+    const username = localStorage.getItem("username");
+    console.log(username);
+    
+    axios
+      .get(`${config.api}/student/user/${username}`)
+      .then((res) => {
+        setStudent(res.data);
+      })
+      .catch(console.error);
+  }, []);
 
 const navigate = useNavigate();
      function handleClick(){
-        navigate("driver-dashboard")
+        navigate("student-dashboard")
      }
-
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" className="sticky-top shadow">
+    <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
       <Container>
-        <Navbar.Brand onClick={handleClick}>Driver Dashboard</Navbar.Brand>
+        <Navbar.Brand onClick={handleClick}>Student Dashboard</Navbar.Brand>
         <Nav className="ms-auto d-flex align-items-center gap-3">
-          {/* 👤 Profile Picture & Dropdown */}
           <div className="dropdown">
             <img
-              src={profilePhotoPath}
-              alt="Driver"
+              src= {student.profilePhotoPath || "https://via.placeholder.com/40"}
+              alt="Profile"
               width="40"
               height="40"
               className="rounded-circle dropdown-toggle"
@@ -31,7 +44,7 @@ const navigate = useNavigate();
             />
             <ul className="dropdown-menu dropdown-menu-end">
               <li>
-                <a className="dropdown-item" href="/driver-profile">
+                <a className="dropdown-item" href="/student-profile">
                   Profile
                 </a>
               </li>
@@ -39,7 +52,6 @@ const navigate = useNavigate();
                 <button
                   className="dropdown-item"
                   onClick={() => {
-                    if (onLogout) onLogout();
                     localStorage.removeItem("username");
                     window.location.href = "/";
                   }}
@@ -55,4 +67,4 @@ const navigate = useNavigate();
   );
 };
 
-export default DriverHeader;
+export default StudentHeader;

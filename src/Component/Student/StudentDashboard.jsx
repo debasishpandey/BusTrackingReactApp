@@ -1,30 +1,39 @@
-// src/StudentDashboard.jsx
-import { useState, useEffect } from 'react';
-import { Navbar, Nav, Button, Container } from 'react-bootstrap';
-import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMap } from 'react-leaflet';
-import L from 'leaflet';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'leaflet/dist/leaflet.css';
+import { useState, useEffect } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Tooltip,
+  useMap,
+} from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import axios from "axios";
+import { Container, Button } from "react-bootstrap";
 import busLogo from "../../assets/LOGO/buslogo.png";
-import axios from 'axios';
-import AdminFooter from '../Admin/AdminFooter';
+import StudentHeader from "./StudentHeader";
+import AdminFooter from "../Admin/AdminFooter";
+import config from "../../util/config";
 
-// Fix for missing marker icons in Leaflet
+// Leaflet marker fix
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
 const busicon = L.icon({
   iconUrl: busLogo,
- iconSize: [35, 23],       // width: 40px, height: ~27px (scaled from 1357x901)
-  iconAnchor: [20, 27],     // center bottom of the icon
-  popupAnchor: [0, -27],    // show popup just above the icon    // position of popup relative to icon
+  iconSize: [35, 23],
+  iconAnchor: [20, 27],
+  popupAnchor: [0, -27],
 });
 
-// 🔄 Helper to recenter the map when location updates
 function Recenter({ location }) {
   const map = useMap();
   useEffect(() => {
@@ -35,136 +44,81 @@ function Recenter({ location }) {
 
 function StudentDashboard() {
   const [isComing, setIsComing] = useState(false);
-  const [location, setLocation] = useState([20.302109, 85.865193]); // Default Bhubaneswar
+  const [location, setLocation] = useState([20.302109, 85.865193]);
   const [buses, setBuses] = useState([]);
-  const [student,setStudent]=useState({});
+  const [student, setStudent] = useState({});
   const username = localStorage.getItem("username");
 
-  console.log(username);
-
-   // 🚍 Fetch active bus data on mount
   useEffect(() => {
-    
-    fetch(`http://localhost:8081/bus/all`)
-      .then((response) => response.json())
-      .then((data) => setBuses(data))
-      .catch((error) => console.error("Error fetching buses:", error));
+    const intervalId = setInterval(() => {
+      fetch(`${config.api}/bus/all`)
+        .then((res) => res.json())
+        .then((data) => setBuses(data))
+        .catch(console.error);
+    }, 2000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
-
-useEffect(() => {
-  const username = localStorage.getItem("username");
-  if (!username) return;
-
-  axios
-    .get(`http://localhost:8081/student/${username}`) // example endpoint
-    .then((res) => {
-      setStudent(res.data);
-      setIsComing(res.data.isComingToday);
-    })
-    .catch((err) => {
-      console.error("Error fetching student:", err);
-    });
-}, []);
-  
+  useEffect(() => {
+    if (!username) return;
+    axios
+      .get(`${config.api}/student/user/${username}`)
+      .then((res) => {
+        setStudent(res.data);
+        setIsComing(res.data.isComingToday);
+      })
+      .catch(console.error);
+  }, []);
 
   const toggleComing = () => {
-  axios
-    .put(`http://localhost:8081/student/update-status/${student.registrationNo}`)
-    .then((response) => {
-      const updatedStudent = response.data;
-      setIsComing(updatedStudent.isComingToday); 
-      setStudent(updatedStudent); 
-    })
-    .catch((error) => {
-      console.error("Error updating coming status:", error);
-    });
-};
+    axios
+      .put(
+        `${config.api}/student/update-status/${student.registrationNo}`
+      )
+      .then((res) => {
+        setIsComing(res.data.isComingToday);
+        setStudent(res.data);
+      })
+      .catch(console.error);
+  };
 
-  // 📍 Fetch current student location
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert("Geolocation not supported by your browser.");
+      alert("Geolocation not supported.");
       return;
     }
-
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        setLocation([latitude, longitude]);
-      },
-      (err) => {
-        alert("Unable to fetch location.");
-        console.error(err);
-      }
+      ({ coords }) => setLocation([coords.latitude, coords.longitude]),
+      (err) => alert("Unable to fetch location.")
     );
   };
 
- 
-
   return (
     <>
-      {/* 🧭 Header */}
-      <Navbar bg="dark" variant="dark" expand="lg">
-        <Container>
-          <Navbar.Brand>Student Dashboard</Navbar.Brand>
-          <Nav className="ms-auto d-flex align-items-center gap-3">
-  <Button variant="info" onClick={getCurrentLocation}>📍 Find Me</Button>
-  <Button
-    variant={isComing ? 'success' : 'danger'}
-    onClick={toggleComing}
-  >
-    {isComing ? 'Coming Today' : 'Not Coming'}
-  </Button>
+      
 
-  {/* 👤 Profile Picture & Dropdown */}
-  <div className="dropdown">
-    <img
-      src={student.profilePhotoPath || "https://via.placeholder.com/40"}
-      alt="Profile"
-      width="40"
-      height="40"
-      className="rounded-circle dropdown-toggle"
-      role="button"
-      data-bs-toggle="dropdown"
-      aria-expanded="false"
-      style={{ cursor: "pointer", objectFit: "cover" }}
-    />
-    <ul className="dropdown-menu dropdown-menu-end">
-      <li>
-        <a className="dropdown-item" href="/student-profile">Profile</a>
-      </li>
-      <li>
-        <button
-          className="dropdown-item"
-          onClick={() => {
-            localStorage.removeItem("username");
-            window.location.href = "/";
-          }}
-        >
-          Logout
-        </button>
-      </li>
-    </ul>
-  </div>
-</Nav>
-
-        </Container>
-      </Navbar>
-
-      {/* 🗺️ Map & Details */}
       <Container className="mt-4">
-        <h4 className="mb-3">Welcome, Pandey</h4>
-        <p>Your pickup location is shown on the map below.</p>
+        <h4 className="mb-3">Welcome, {student.name}</h4>
+        <div className="d-flex gap-3 mb-3">
+          <Button variant="info" onClick={getCurrentLocation}>
+            📍 Find Me
+          </Button>
+          <Button
+            variant={isComing ? "success" : "danger"}
+            onClick={toggleComing}
+          >
+            {isComing ? "Coming Today" : "Not Coming"}
+          </Button>
+        </div>
 
         <MapContainer
           center={location}
           zoom={15}
-          style={{ height: '70vh', width: '100%' }}
+          style={{ height: "70vh", width: "100%" }}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-          {/* 🚶 Student Marker */}
           <Marker position={location}>
             <Tooltip permanent direction="top" offset={[0, -10]}>
               You
@@ -172,25 +126,28 @@ useEffect(() => {
             <Popup>Your Pickup Point</Popup>
           </Marker>
 
-          {/* 🔄 Recenter map if location updates */}
           <Recenter location={location} />
 
-          {/* 🚌 Bus Markers */}
-          {buses.map((bus) => (
-            <Marker key={bus.id} position={[bus.latitude, bus.longitude]} icon={busicon}>
-              <Popup>
-                <strong>{bus.busNumber}</strong><br />
-                Route: {bus.routeName}
-              </Popup>
-              <Tooltip permanent direction="top" offset={[0, -10]}>
-                {bus.busNumber}
-              </Tooltip>
-            </Marker>
-          ))}
+          {buses
+            .filter((bus) => bus.status === true)
+            .map((bus) => (
+              <Marker
+                key={`bus-${bus.id}-${bus.latitude}-${bus.longitude}`}
+                position={[bus.latitude, bus.longitude]}
+                icon={busicon}
+              >
+                <Popup>
+                  <strong>{bus.busNumber}</strong>
+                  <br />
+                  {bus.routeName}
+                </Popup>
+                <Tooltip>{bus.busNumber}</Tooltip>
+              </Marker>
+            ))}
         </MapContainer>
-
       </Container>
-      
+
+      <AdminFooter />
     </>
   );
 }
