@@ -1,26 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 import config from "../../util/config";
+import { toast } from "react-toastify";
 
 const AdminStudentUpdate = () => {
   const { registrationNo } = useParams();
-  const apiUrl=config.api;
+  const apiUrl = config.api;
   const [buses, setBus] = useState([]);
   const [studentData, setStudentData] = useState({
-    name: '',
-    username: '',
+    name: "",
+    username: "",
     isComingToday: false,
     assignedBus: null,
-    pickupLocation: '',
-    profilePhotoPath: '',
-    password: '',
-    registrationNo: ''
+    pickupLocation: "",
+    profilePhotoPath: "",
+    password: "",
+    registrationNo: "",
   });
 
   useEffect(() => {
-    axios.get(`${apiUrl}/student/${registrationNo}`)
+    axios
+      .get(`${apiUrl}/student/${registrationNo}`)
       .then((res) => {
         const fetchedStudent = res.data;
         // Set assignedBus to null if missing
@@ -31,9 +33,10 @@ const AdminStudentUpdate = () => {
       })
       .catch((err) => console.error(err));
 
-    axios.get(`${apiUrl}/bus/all`)
-      .then(res => setBus(res.data))
-      .catch(err => console.error('Failed to fetch buses:', err));
+    axios
+      .get(`${apiUrl}/bus/all`)
+      .then((res) => setBus(res.data))
+      .catch((err) => console.error("Failed to fetch buses:", err));
   }, [registrationNo]);
 
   const handleChange = (e) => {
@@ -42,12 +45,12 @@ const AdminStudentUpdate = () => {
     if (name === "assignedBus") {
       setStudentData((prev) => ({
         ...prev,
-        assignedBus: value ? { id: parseInt(value) } : null
+        assignedBus: value ? { id: parseInt(value) } : null,
       }));
     } else {
       setStudentData((prev) => ({
         ...prev,
-        [name]: type === 'checkbox' ? checked : value,
+        [name]: type === "checkbox" ? checked : value,
       }));
     }
   };
@@ -55,8 +58,9 @@ const AdminStudentUpdate = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.put(`${apiUrl}/student/update`, studentData)
-      .then(() => alert("Student updated successfully"))
+    axios
+      .put(`${apiUrl}/student/update`, studentData)
+      .then(() => toast.success("Details Updated"))
       .catch((err) => console.error("Error updating student:", err));
   };
 
@@ -103,13 +107,22 @@ const AdminStudentUpdate = () => {
               <Form.Label>Assign Bus</Form.Label>
               <Form.Select
                 name="assignedBus"
-                value={studentData.assignedBus?.id || ''}
-                onChange={handleChange}
+                value={studentData.assignedBus?.id || ""}
+                onChange={(e) => {
+                  const selectedValue = e.target.value;
+                  setStudentData({
+                    ...studentData,
+                    assignedBus:
+                      selectedValue === ""
+                        ? null
+                        : { id: parseInt(selectedValue) },
+                  });
+                }}
               >
                 <option value="">-- Unassign Bus --</option>
                 {buses.map((bus) => (
                   <option key={bus.id} value={bus.id}>
-                    {bus.busNumber}
+                    {bus.busNumber+" - "+bus.routeName}
                   </option>
                 ))}
               </Form.Select>
@@ -132,7 +145,9 @@ const AdminStudentUpdate = () => {
             </Form.Group>
           </Col>
         </Row>
-        <Button variant="primary" type="submit">Update</Button>
+        <Button variant="primary" type="submit">
+          Update
+        </Button>
       </Form>
     </Container>
   );

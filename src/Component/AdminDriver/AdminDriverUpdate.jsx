@@ -3,6 +3,7 @@ import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import config from "../../util/config";
+import { toast } from 'react-toastify';
 
 const AdminDriverUpdate = () => {
   const { driverId } = useParams(); // assumes URL: /driver/update/:id
@@ -35,7 +36,7 @@ const apiUrl=config.api;
   const handleSubmit = (e) => {
     e.preventDefault();
     axios.put(`${apiUrl}/driver/update`, driver)
-      .then(() => alert("update"))
+      .then(() => toast.success("Details Updated."))
       .catch((err) => console.error('Error updating driver:', err));
   };
 

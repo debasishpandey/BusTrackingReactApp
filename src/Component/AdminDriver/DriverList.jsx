@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import profilePhoto from '../../assets/default_profile.jpg';
 import config from "../../util/config";
+import { toast } from 'react-toastify';
 
 const DriverList = () => {
   const [drivers, setDrivers] = useState([]);
@@ -16,11 +17,17 @@ const apiUrl=config.api;
   }, []);
 
   const handleRemove = (id) => {
-    axios.delete(`/api/drivers/${id}`)
+    axios.delete(`${config.api}/driver/${id}`)
       .then(() => {
+        toast.success("Driver removed.")
         setDrivers((prevDrivers) => prevDrivers.filter(driver => driver.id !== id));
       })
-      .catch((err) => console.error('Error removing driver:', err));
+      .catch((err) => {
+        console.error('Error removing driver:', err)
+        alert("make sure that the driver is not assign to a bus nad try again.")
+        toast.error("failed")
+  });
+
   };
 
  

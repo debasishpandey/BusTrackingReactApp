@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import config from "../../util/config";
 
 export default function StudentProfile() {
   const [student, setStudent] = useState(null);

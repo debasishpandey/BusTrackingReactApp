@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import config from "../../util/config";
+import { toast } from 'react-toastify';
 
 const BusRegister = () => {
   const [busNumber, setBusNumber] = useState('');
@@ -18,7 +19,7 @@ const BusRegister = () => {
       routeName,
       status
     });
-      alert("Bus registered successfully!");
+      toast.success("Bus Registered.")
       console.log(response.data);
     } catch (error) {
       console.error("Error:", error);

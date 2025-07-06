@@ -2,4 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 @import "leaflet/dist/leaflet.css";
-
+.leaflet-marker-icon.rounded-marker {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white; /* optional */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* optional */
+}

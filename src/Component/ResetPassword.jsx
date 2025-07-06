@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import config from "../util/config";
+import { toast } from 'react-toastify';
 
 const ResetPassword = ({ role = 'student' }) => {
   const [newPassword, setNewPassword] = useState('');
@@ -29,11 +30,12 @@ const ResetPassword = ({ role = 'student' }) => {
     });
 
       if (response.status === 200) {
-        alert('Password reset successfully. Please login.');
+        toast.success("Password reset successfully.")
           setTimeout(() => {
     navigate(`${role}-login`);  
   }, 2000);
       } else {
+        toast.error("Failed to reset password.")
         setMessage('Failed to reset password.');
       }
     } catch (error) {

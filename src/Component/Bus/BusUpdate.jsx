@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useParams} from 'react-router-dom';
-import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap';
-import { toast, ToastContainer } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import { Form, Button, Container, Row, Col, Spinner } from "react-bootstrap";
+import { toast } from "react-toastify";
 import config from "../../util/config";
 
 const BusUpdate = () => {
   const { busId } = useParams(); // assumes route: /admin/bus/update/:busId
-
 
   const [bus, setBus] = useState(null);
   const [drivers, setDrivers] = useState([]);
 
   useEffect(() => {
     // Fetch bus details
-    axios.get(`${config.api}/bus/${busId}`)
-      .then(res => setBus(res.data))
-      .catch(err => console.error('Failed to fetch bus:', err));
+    axios
+      .get(`${config.api}/bus/${busId}`)
+      .then((res) => setBus(res.data))
+      .catch((err) => console.error("Failed to fetch bus:", err));
 
     // Fetch available drivers
-    axios.get(`${config.api}/driver/all`)
-      .then(res => setDrivers(res.data))
-      .catch(err => console.error('Failed to fetch drivers:', err));
+    axios
+      .get(`${config.api}/driver/all`)
+      .then((res) => setDrivers(res.data))
+      .catch((err) => console.error("Failed to fetch drivers:", err));
   }, [busId]);
 
   const handleChange = (e) => {
@@ -32,17 +33,17 @@ const BusUpdate = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("cliked");
-    
 
-    axios.put(`${config.api}/bus/update`, bus)
+    axios
+      .put(`${config.api}/bus/update`, bus)
       .then(() => {
-        toast.success('bus details updated successfully!');
+        toast.success("Bus details updated.");
         console.log("update");
-        
       })
-      .catch(err => {
-        toast.error('Update failed:', err);
-        alert('Failed to update bus');
+      .catch((err) => {
+        toast.error("Update failed:");
+        console.log(err);
+        alert("Failed to update bus");
       });
   };
 
@@ -113,7 +114,7 @@ const BusUpdate = () => {
             name="status"
             value={bus.status}
             onChange={(e) =>
-              setBus({ ...bus, status: e.target.value === 'true' })
+              setBus({ ...bus, status: e.target.value === "true" })
             }
           >
             <option value="true">Active</option>
@@ -125,20 +126,35 @@ const BusUpdate = () => {
           <Form.Label>Assign Driver</Form.Label>
           <Form.Select
             name="assignedDriver"
-            value={bus.assignedDriver?.id || ''}
-            onChange={(e) =>
+            value={bus.assignedDriver?.id || ""}
+            onChange={(e) => {
+              const selectedValue = e.target.value;
               setBus({
                 ...bus,
-                assignedDriver: { id: e.target.value },
-              })
-            }
-           >
+                assignedDriver: selectedValue
+                  ? { id: parseInt(selectedValue) }
+                  : null,
+              });
+            }}
+          >
             <option value="">-- Select Driver --</option>
-            {drivers.map((driver) => (
-              <option key={driver.id} value={driver.id}>
-                {driver.name}
+            <option value="">@Remove Driver</option>
+            {bus.assignedDriver && (
+              <option value={bus.assignedDriver.id}>
+                {drivers.find((d) => d.id === parseInt(bus.assignedDriver.id))
+                  ?.name || "Assigned Driver"}
               </option>
-            ))}
+            )}
+
+            {drivers
+              .filter(
+                (driver) => !driver.bus || driver.id === bus.assignedDriver?.id
+              )
+              .map((driver) => (
+                <option key={driver.id} value={driver.id}>
+                  {driver.name}
+                </option>
+              ))}
           </Form.Select>
         </Form.Group>
 

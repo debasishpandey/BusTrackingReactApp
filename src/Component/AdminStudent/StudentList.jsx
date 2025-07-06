@@ -4,6 +4,7 @@ import { Card, Button, Container, Row, Col, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import profilePhoto from '../../assets/default_profile.jpg';
 import config from "../../util/config";
+import { toast } from "react-toastify";
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
@@ -30,12 +31,13 @@ const StudentList = () => {
     if (window.confirm("Are you sure you want to delete this student?")) {
       try {
         await axios.delete(`${apiUrl}/student/${registrationNo}`);
+        toast.success("Student Removed!")
         setStudents(
           students.filter((s) => s.registrationNo !== registrationNo)
         );
       } catch (err) {
         console.error("Failed to delete student:", err);
-        alert("Error deleting student.");
+        toast.error("Failed to Remove.")
       }
     }
   };
@@ -67,7 +69,7 @@ const StudentList = () => {
               {student.profilePhotoPath ? (
                 <Card.Img
                   variant="top"
-                  src={`${apiUrl}/images/${student.profilePhotoPath}`}
+                  src={`${student.profilePhotoPath}`}
                   alt="Profile"
                   style={{ height: "250px", objectFit: "cover" }}
                 />

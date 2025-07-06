@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import config from "../util/config";
+import { toast } from 'react-toastify';
 
 
 const RoleLogin = ({ role }) => {
@@ -36,9 +37,13 @@ const RoleLogin = ({ role }) => {
 
       if (response.data === true) {
         localStorage.setItem("username", username);
-        navigate(`/${toUrl}-dashboard`);
+          toast.success("Login Success.")
+          
+  navigate(`/${toUrl}-dashboard`);
+
+        
       } else {
-        alert('Invalid credentials. Please try again.');
+        toast.error("Invalid username or password")
       }
     } catch (error) {
       console.error('Login failed:', error);
@@ -49,6 +54,7 @@ const RoleLogin = ({ role }) => {
   const isPasswordResetVisible = ['student', 'driver'].includes(role.toLowerCase());
 
   return (
+    <>
     <Container
   fluid
   className="d-flex align-items-center justify-content-center vh-100"
@@ -108,6 +114,8 @@ const RoleLogin = ({ role }) => {
         </Col>
       </Row>
     </Container>
+  
+    </>
   );
 };
 

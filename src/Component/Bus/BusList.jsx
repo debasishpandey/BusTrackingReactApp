@@ -3,6 +3,7 @@ import axios from "axios";
 import { Button, Table, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import config from "../../util/config";
+import { toast } from "react-toastify";
 
 const BusList = () => {
   const [buses, setBuses] = useState([]);
@@ -31,10 +32,11 @@ const BusList = () => {
     try {
       await axios.delete(`${apiUrl}/bus/${id}`);
       setBuses((prev) => prev.filter((bus) => bus.id !== id));
-      alert("Bus removed successfully.");
+      toast.success("Bus removed successfully.")
     } catch (error) {
       console.error("Error removing bus:", error);
-      alert("Failed to remove bus.");
+      alert("make sure that the bus is not assign to a driver and try again.")
+      toast.error("Failed to remove bus.")
     }
   };
 

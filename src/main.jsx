@@ -34,6 +34,7 @@ import RouteManager from "./Component/Route/RouteManager.jsx";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "react-toastify/dist/ReactToastify.css";
 
 import AdminHeader from "./Component/Admin/AdminHeader.jsx";
 import Navbarc from "./Component/Admin/Navbar.jsx";
@@ -42,6 +43,7 @@ import ResetPassword from "./Component/ResetPassword.jsx";
 import StudentLayout from "./Component/Student/StudentLayout.jsx";
 import StudentProfile from "./Component/Student/StudentProfile.jsx";
 import DriverProfile from "./Component/Driver/DriverProfile.jsx";
+import { ToastContainer } from "react-toastify";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -105,13 +107,27 @@ const router = createBrowserRouter(
       <Route path="/admin-Login" element={<RoleLogin role="admin" />} />
       <Route path="/student-Login" element={<RoleLogin role="student" />} />
       <Route path="/driver-Login" element={<RoleLogin role="driver" />} />
-      <Route path="/student-dashboard" element={<StudentDashboard />} />
+      
+
     </>
   )
 );
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <>
+      <RouterProvider router={router} />
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+    </>
   </StrictMode>
 );

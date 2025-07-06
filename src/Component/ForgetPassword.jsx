@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import config from "../util/config";
+import { toast } from 'react-toastify';
 
 const ForgotPassword = () => {
   const { role } = useParams();
@@ -37,12 +38,15 @@ const ForgotPassword = () => {
     // Since the backend just returns a plain string like "OTP sent"
     if (response.status === 200 && response.data.includes("OTP sent")) {
       setMessage('OTP sent successfully!');
+      toast.success("OTP sent successfully!")
       setStep('verify');
     } else {
       setMessage('User not found.');
+      toast.error('User not found.')
     }
   } catch (error) {
     setMessage('Failed to send OTP.');
+     toast.error('Failed to send OTP.')
     console.error(error);
   }
 };
@@ -58,11 +62,13 @@ const ForgotPassword = () => {
 
     if (response.status === 200 && response.data === "OTP is valid") {
 
-      setMessage("OTP verified. You can now reset your password.");
+      setMessage("You can now reset your password.");
+      toast.success("OTP verified.")
       navigate(`/${role}/reset-password`, { state: { username: email } });
       
       // Redirect or show reset password form
     } else {
+      toast.error("Invalid OTP. Try again.")
       setMessage("Invalid OTP. Try again.");
     }
   } catch (error) {

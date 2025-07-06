@@ -12,9 +12,8 @@ import "leaflet/dist/leaflet.css";
 import axios from "axios";
 import { Container, Button } from "react-bootstrap";
 import busLogo from "../../assets/LOGO/buslogo.png";
-import StudentHeader from "./StudentHeader";
-import AdminFooter from "../Admin/AdminFooter";
 import config from "../../util/config";
+import { toast } from "react-toastify";
 
 // Leaflet marker fix
 delete L.Icon.Default.prototype._getIconUrl;
@@ -79,6 +78,7 @@ function StudentDashboard() {
       .then((res) => {
         setIsComing(res.data.isComingToday);
         setStudent(res.data);
+        toast.success("Status Updated!")
       })
       .catch(console.error);
   };
@@ -93,6 +93,32 @@ function StudentDashboard() {
       (err) => alert("Unable to fetch location.")
     );
   };
+
+  useEffect(() => {
+  if (!username) return;
+
+  const updateLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        const lat = coords.latitude;
+        const lon = coords.longitude;
+        setLocation([lat, lon]);
+
+        axios.put(`${config.api}/student/update-location/${username}`, {
+          latitude: lat,
+          longitude: lon
+        }).catch(err => console.error("Error updating student location:", err));
+      },
+      (err) => console.error("Geolocation error:", err),
+      { enableHighAccuracy: true }
+    );
+  };
+
+  updateLocation(); // Send immediately
+  const intervalId = setInterval(updateLocation, 2000); // Send every 2 seconds
+  return () => clearInterval(intervalId);
+}, [username]);
+
 
   return (
     <>
@@ -147,7 +173,7 @@ function StudentDashboard() {
         </MapContainer>
       </Container>
 
-      <AdminFooter />
+      
     </>
   );
 }
