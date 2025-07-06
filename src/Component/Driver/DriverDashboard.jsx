@@ -82,7 +82,7 @@ export default function DriverDashboard() {
   // Fetch students every 2 seconds
   useEffect(() => {
     const fetchStudents = () => {
-      fetch(`${config.api}/student/by-driver/${username}`)
+      fetch(`${config.api}/student/all`)
         .then((res) => res.json())
         .then((data) => setStudents(data))
         .catch((err) => console.error("Failed to fetch students:", err));
