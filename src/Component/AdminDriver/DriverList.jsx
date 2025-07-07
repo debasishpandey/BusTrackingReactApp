@@ -24,7 +24,7 @@ const apiUrl=config.api;
       })
       .catch((err) => {
         console.error('Error removing driver:', err)
-        alert("make sure that the driver is not assign to a bus nad try again.")
+        alert("make sure that the driver is not assign to a bus and try again.")
         toast.error("failed")
   });
 
